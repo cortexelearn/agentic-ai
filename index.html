@@ -11015,43 +11015,45 @@ const AGENTIC_LESSONS = [
   {
     phase: "Phase 2", phaseColor: "#1c4a7a",
     title: "n8n Orientation",
-    subtitle: "The most capable open-source agent platform. Self-hosted vs. cloud, the visual canvas, and the node/trigger/credential model you'll build on.",
+    subtitle: "A popular self-hostable, fair-code agent platform. Self-hosted vs. cloud, the visual canvas, and the node/trigger/credential model you'll build on.",
     time: "35 min", type: "Hands-On",
     video: { id: "ZbIVOy_GPyQ", title: "n8n Full Tutorial — Building AI Agents for Beginners (interface & hierarchy) (AI Foundations)" },
     content: [
-      { type: "p", text: "n8n (pronounced 'n-eight-n', short for 'nodemation') is an open-source workflow automation platform that has become, as of 2026, the most capable open-source environment for building AI agents. It ships with 400+ integration nodes and 70+ dedicated AI nodes built on the LangChain framework. For an aerospace org with data-privacy or ITAR concerns, its defining advantage is that you can self-host it entirely on your own infrastructure — no data leaves your control." },
+      { type: "p", text: "n8n (pronounced 'n-eight-n', short for 'nodemation') is a source-available ('fair-code') workflow automation platform that has become a popular self-hostable environment for building AI agents. It ships with hundreds of integration nodes and dozens of dedicated AI nodes, many built on LangChain (an open-source library for building LLM applications). For an aerospace org with data-privacy or ITAR (International Traffic in Arms Regulations) concerns, its defining advantage is that you can self-host the platform entirely on your own infrastructure, so workflow definitions, credentials and execution data stay under your control. Data still leaves your boundary whenever a workflow sends it out — for example, to a cloud LLM API such as OpenAI or Anthropic — so self-hosting is necessary but not sufficient for controlled data." },
 
       { type: "h3", text: "Self-Hosted vs. Cloud" },
 
-      { type: "p", text: "n8n offers two deployment models, and the choice has real consequences for regulated work:" },
+      { type: "p", text: "n8n offers two deployment models, plus one licensing point you should know; the choice has real consequences for regulated work:" },
 
       { type: "ul", items: [
         "**n8n Cloud** — n8n hosts it for you, subscription-based. Fastest to start, no infrastructure to manage, automatic updates. But your workflow data and the data flowing through it touch n8n's servers. For non-sensitive automation this is fine; for controlled technical data it is usually a non-starter.",
-        "**Self-hosted** — you run n8n on your own server, VPS, or on-prem hardware, typically via Docker. Free community edition or paid enterprise tiers. Everything stays inside your boundary. This is the deployment aerospace teams will almost always want, and it's required for some features like the LangChain Code node.",
-        "**Fair-code license** — n8n is 'fair-code,' not strictly open-source: free to self-host and modify, with some restrictions on reselling it as a hosted service. For internal corporate use this distinction rarely matters, but legal should be aware of it."
+        "**Self-hosted** — you run n8n on your own server, a rented virtual private server (VPS), or on-prem hardware, typically via Docker (a container runtime). Free community edition or paid enterprise tiers. The platform stays inside your boundary — but for ITAR data, that boundary must itself be approved: a generic rented VPS is still a third party's hardware, so controlled data usually means on-prem or an export-control-approved environment (confirm with your export-control office). This is the deployment aerospace teams will almost always want, and it's required for some features like the LangChain Code node.",
+        "**Fair-code license** — n8n is 'fair-code,' not strictly open-source: free to self-host and modify, with restrictions on commercial redistribution, such as reselling it or offering it to others as a hosted service. For internal corporate use this distinction rarely matters, but legal should be aware of it."
       ]},
+      {type: "callout", variant: "info", text: "Your test-operations lead wants an agent that reads last night's test-stand anomaly log, drafts a summary, and posts it to the team channel by 7am. Before anyone opens the canvas, answer three questions: (1) Is any of that log export-controlled? If yes, the instance must be self-hosted in an approved environment *and* the model must be one you are authorized to send that data to — often a locally hosted model. (2) Who owns the credentials (database, chat, model API) and who can rotate them? (3) Who patches and backs up the server? n8n makes the build easy; these answers are what make it safe to run.", label: "Manager's Scenario"},
 
       { type: "h3", text: "The Mental Model: Nodes on a Canvas" },
 
-      { type: "p", text: "An n8n workflow is a visual graph. You drag **nodes** onto a canvas and wire them together with connections. Data flows left to right along the wires. The three node categories you must understand:" },
+      { type: "p", text: "An n8n workflow is a visual graph. You drag **nodes** onto a canvas and wire them together with connections. By convention, data flows left to right along the wires. The three node categories you must understand:" },
 
       { type: "ul", items: [
-        "**Trigger nodes** — start a workflow. A schedule ('every morning at 6am'), a webhook (an external system calls a URL), a chat message, an email arriving, a file appearing. A workflow needs at least one trigger and can hold more than one (for example, a Schedule trigger and a Webhook trigger), but each execution starts from exactly one of them.",
+        "**Trigger nodes** — start a workflow. A schedule ('every morning at 6am'), a webhook (an external system calls a URL), a chat message, an email arriving, a file appearing, another workflow calling this one, or a manual click while you are testing. A workflow needs at least one trigger and can hold more than one (for example, a Schedule trigger and a Webhook trigger), but each execution starts from exactly one of them.",
         "**Action / regular nodes** — do something: call an API, query a database, transform data, send a message. The bulk of a workflow.",
-        "**Cluster nodes (AI)** — the special category for agents. A root node (like the AI Agent node) coordinates attached sub-nodes (a chat-model node, a memory node, tool nodes). This is how the agent anatomy from Lesson 2 gets wired visually."
+        "**Cluster nodes (AI)** — the special category for agents. A root node (like the AI Agent node) coordinates sub-nodes wired vertically underneath it into dedicated ports (Chat Model, Memory, and Tools), while main workflow data still flows left to right between root and action nodes. This is how the agent anatomy from Lesson 2 gets wired visually."
       ]},
 
       { type: "h3", text: "Credentials" },
 
-      { type: "p", text: "n8n separates **credentials** from workflows. You register an API key once (OpenAI, Anthropic, your email server, a database) in n8n's encrypted credential store, then reference it by name in any node. This matters for security: credentials are encrypted at rest, never hard-coded into the workflow definition, and can be scoped and rotated centrally. When you self-host, those credentials live in your database, under your control — never on a third party's servers." },
+      { type: "p", text: "n8n separates **credentials** from workflows. You register an API key once (OpenAI, Anthropic, your email server, a database) in n8n's encrypted credential store, then select it in any node that needs it. This matters for security: credentials are encrypted at rest, kept out of the workflow definition (as long as you use the credential store rather than pasting a key into a node field), and can be rotated centrally — update the credential once and every workflow that uses it picks up the change. Sharing and role-based scoping of credentials may depend on your n8n plan. When you self-host, those credentials live in your database, under your control — never on a third party's servers. One operational caveat: n8n encrypts them with an instance encryption key (auto-generated on first start unless you set N8N_ENCRYPTION_KEY). Back that key up and store it separately from database backups — lose it and every stored credential is unrecoverable; leak it with a backup and the encryption no longer protects you." },
 
       { type: "h3", text: "Data Between Nodes" },
 
-      { type: "p", text: "Every node passes data to the next as a list of JSON items. A node receives items, does its work, and outputs items. Understanding that data is always 'a list of JSON objects flowing down the wire' is the single concept that makes n8n click — expressions, loops, and branching all operate on that item list. You'll see this concretely the moment you build your first workflow in the next lesson." },
+      { type: "p", text: "Every node passes data to the next as a list of items; each item is a JSON object, optionally with attached binary data such as a file. A node receives items, does its work, and outputs items. Understanding that data is always 'a list of JSON items flowing down the wire' is the single concept that makes n8n click — expressions, loops, and branching all operate on that item list, and most nodes simply run once for each item, so you rarely need an explicit loop. You'll see this concretely the moment you build your first workflow in the next lesson." },
 
       { type: "h3", text: "Why n8n for This Track" },
 
-      { type: "p", text: "We use n8n as the primary hands-on platform for three reasons: it's free to self-host (you can follow along at zero cost), it makes the agent anatomy visible (you literally see the brain, tools, and memory as wired nodes), and it's genuinely production-capable (it scales with Docker, PostgreSQL, and queue mode, so what you learn transfers to real deployments). The concepts — tool-calling, memory, orchestration, human-in-the-loop — are universal; n8n just makes them tangible." }
+      { type: "p", text: "We use n8n as the primary hands-on platform for three reasons: it's free to self-host (you can follow along at zero license cost; LLM API calls and any server you rent are billed separately unless you run a local model), it makes the agent anatomy visible (you literally see the brain, tools, and memory as wired nodes), and it's genuinely production-capable (it scales with Docker, PostgreSQL, and Redis-backed queue mode with separate worker processes, so what you learn transfers to real deployments). The concepts — tool-calling, memory, orchestration, human-in-the-loop — are universal; n8n just makes them tangible." },
+      {type: "callout", variant: "success", text: "n8n is three ideas: triggers start runs, nodes pass lists of JSON items, and a credential store keeps secrets out of workflows. Self-hosting controls where the platform runs; it does not control where a workflow sends data. That second question is the manager's to own.", label: "Takeaway"}
     ],
     quizzes: [
       {
