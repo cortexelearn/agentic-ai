@@ -11059,13 +11059,13 @@ const AGENTIC_LESSONS = [
       {
         question: "For an aerospace team handling ITAR-controlled technical data, which n8n deployment model is generally appropriate and why?",
         options: [
-          "Self-hosted, because the platform and all data flowing through it stay entirely inside the organization's own infrastructure boundary",
+          "Self-hosted in an export-control-approved environment, because the platform and its stored and execution data stay inside that boundary (data still leaves whenever a workflow sends it out)",
           "n8n Cloud, because n8n's servers provide better security than most companies can",
           "Either one — the deployment model has no bearing on where data goes",
           "n8n Cloud, because controlled data is automatically encrypted before reaching n8n's servers"
         ],
         correct: 0,
-        explanation: "Self-hosting keeps n8n and every byte flowing through it inside your own boundary (your server/VPS/on-prem, typically via Docker). n8n Cloud routes workflow data through n8n's servers, which is usually a non-starter for controlled technical data regardless of encryption. Self-hosted is also required for some features like the LangChain Code node."
+        explanation: "Self-hosting in an environment your export-control office has approved (typically on-prem or another export-control-approved environment) keeps n8n, its credentials and its execution data inside that boundary. A generic rented VPS is still a third party's hardware, so it is not enough on its own for ITAR data. Self-hosting controls where n8n runs, not where a workflow sends data: a node that calls a cloud LLM API still sends that data out, so the model must also be one you are authorized to use. n8n Cloud routes workflow data through n8n's servers, which is usually a non-starter for controlled technical data regardless of encryption."
       },
       {
         question: "What starts each n8n workflow execution?",
